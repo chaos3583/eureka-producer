@@ -15,6 +15,12 @@ public class ProducerController {
 
     @RequestMapping("/hello")
     public String hello(@RequestParam String name) {
+
+        ESUtil esUtil = new ESUtil();
+        esUtil.addData("test","_doc","1","{\n" +
+                "    \"groupID\": 953,\n" +
+                "    \"houseId\": 24658946\n" +
+                "}");
         return "hello "+name+"，this is first message";
     }
 }
