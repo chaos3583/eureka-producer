@@ -9,6 +9,8 @@ import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.action.get.GetRequest;
+import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.support.replication.ReplicationResponse;
@@ -150,6 +152,16 @@ public class ESUtil {
                    e.printStackTrace();
                }
            }
+
+           public Map<String,Object> getDocumentById(String index,String type,String id) throws IOException {
+               GetRequest getRequest = new GetRequest(index,type,id);
+               GetResponse response = client.get(getRequest);
+               boolean exists = response.isExists();
+               Map<String, Object> sourceAsMap = response.getSourceAsMap();
+               return sourceAsMap;
+
+           }
+
            public static void main(String ags[]){
                Map<String,Object> map1 = new HashMap<String, Object>();
                map1.put("id","2");
