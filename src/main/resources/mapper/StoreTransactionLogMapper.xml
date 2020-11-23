@@ -1,0 +1,674 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+<mapper namespace="com.chaos.eurekaproducer.mapper.StoreTransactionLogMapper">
+    <!-- table映射实体对象 -->
+    <resultMap id="RM_StoreTransactionLog" type="com.chaos.eurekaproducer.domain.StoreTransactionLog">
+        <result property="id" column="id"/>
+        <result property="groupID" column="groupID"/>
+        <result property="houseId" column="houseId"/>
+        <result property="houseName" column="houseName"/>
+        <result property="parentId" column="parentId"/>
+        <result property="businessNo" column="businessNo"/>
+        <result property="barcode" column="barcode"/>
+        <result property="goodsName" column="goodsName"/>
+        <result property="goodsDesc" column="goodsDesc"/>
+        <result property="totalNum" column="totalNum"/>
+        <result property="beforeNum" column="beforeNum"/>
+        <result property="beforeTotalNum" column="beforeTotalNum"/>
+        <result property="afterNum" column="afterNum"/>
+        <result property="afterTotalNum" column="afterTotalNum"/>
+        <result property="standardUnit" column="standardUnit"/>
+        <result property="batch" column="batch"/>
+        <result property="batchSys" column="batchSys"/>
+        <result property="productionDate" column="productionDate"/>
+        <result property="shelfLife" column="shelfLife"/>
+        <result property="isQualified" column="isQualified"/>
+        <result property="location" column="location"/>
+        <result property="status" column="status"/>
+        <result property="statusStr" column="statusStr"/>
+        <result property="action" column="action"/>
+        <result property="actionBy" column="actionBy"/>
+        <result property="actionTime" column="actionTime"/>
+        <result property="createBy" column="createBy"/>
+        <result property="createTime" column="createTime"/>
+        <result property="ownerId" column="ownerId"/>
+        <result property="ownerName" column="ownerName"/>
+        <result property="goodsCategory1Id" column="goodsCategory1Id"/>
+        <result property="goodsCategory1Name" column="goodsCategory1Name"/>
+        <result property="goodsCategory2Id" column="goodsCategory2Id"/>
+        <result property="goodsCategory2Name" column="goodsCategory2Name"/>
+        <result property="goodsCategoryId" column="goodsCategoryId"/>
+        <result property="goodsCategoryName" column="goodsCategoryName"/>
+        <result property="weight" column="weight"/>
+        <result property="volume" column="volume"/>
+        <result property="ratio" column="ratio"/>
+    </resultMap>
+
+    <resultMap id="totalCount" type="java.lang.Integer">
+        <result column="totalCount"/>
+    </resultMap>
+    
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="select_columns">
+        <![CDATA[
+			id,groupID,houseId,houseName,parentId,businessNo,barcode,goodsName,goodsDesc,totalNum,beforeNum,beforeTotalNum,
+			afterNum,afterTotalNum,standardUnit,batch,batchSys,productionDate,shelfLife,isQualified,location,status,statusStr,
+			action,actionBy,actionTime,createBy,createTime,ownerId,ownerName,goodsCategory1Id,goodsCategory1Name,
+			goodsCategory2Id,goodsCategory2Name,goodsCategoryId,goodsCategoryName,weight,volume,ratio
+		    ]]>
+    </sql>
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="com.chaos.eurekaproducer.domain.StoreTransactionLog" useGeneratedKeys="true" keyProperty="id">
+        insert into tbl_wms_store_transaction_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            groupID,
+            <if test="houseId != null  ">
+                houseId ,
+            </if>
+            <if test="houseName != null and houseName != '' ">
+                houseName ,
+            </if>
+            <if test="parentId != null  ">
+                parentId ,
+            </if>
+            <if test="businessNo != null and businessNo != '' ">
+                businessNo ,
+            </if>
+            <if test="barcode != null and barcode != '' ">
+                barcode ,
+            </if>
+            <if test="goodsName != null and goodsName != '' ">
+                goodsName ,
+            </if>
+            <if test="goodsDesc != null and goodsDesc != '' ">
+                goodsDesc ,
+            </if>
+            <if test="totalNum != null  ">
+                totalNum ,
+            </if>
+            <if test="beforeNum != null">
+                beforeNum,
+            </if>
+            <if test="beforeTotalNum != null">
+                beforeTotalNum,
+            </if>
+            <if test="afterNum != null">
+                afterNum,
+            </if>
+            <if test="afterTotalNum != null">
+                afterTotalNum,
+            </if>
+            <if test="standardUnit != null and standardUnit != '' ">
+                standardUnit ,
+            </if>
+            <if test="batch != null and batch != '' ">
+                batch ,
+            </if>
+            <if test="batchSys != null and batchSys != '' ">
+                batchSys ,
+            </if>
+            <if test="productionDate != null and productionDate != 0  ">
+                productionDate ,
+            </if>
+            <if test="shelfLife != null  ">
+                shelfLife ,
+            </if>
+            <if test="isQualified != null">
+                isQualified,
+            </if>
+            <if test="location != null and location != '' ">
+                location ,
+            </if>
+            <if test="status != null  ">
+                status ,
+            </if>
+            <if test="statusStr != null and statusStr != ''">
+                statusStr,
+            </if>
+            <if test="action != null  ">
+                action ,
+            </if>
+            <if test="actionBy != null and actionBy != '' ">
+                actionBy ,
+            </if>
+            <if test="actionTime != null  ">
+                actionTime ,
+            </if>
+            <if test="createBy != null and createBy != '' ">
+                createBy ,
+            </if>
+            <if test="createTime != null  ">
+                createTime ,
+            </if>
+            <if test="ownerId  != null  ">
+                ownerId ,
+            </if>
+            <if test="ownerName != null  and ownerName != ''  ">
+                ownerName ,
+            </if>
+            <if test="goodsCategory1Id != null">
+                goodsCategory1Id,
+            </if>
+            <if test="goodsCategory1Name != null and goodsCategory1Name != ''">
+                goodsCategory1Name,
+            </if>
+            <if test="goodsCategory2Id != null">
+                goodsCategory2Id,
+            </if>
+            <if test="goodsCategory2Name != null and goodsCategory2Name != ''">
+                goodsCategory2Name,
+            </if>
+            <if test="goodsCategoryId != null">
+                goodsCategoryId,
+            </if>
+            <if test="goodsCategoryName != null and goodsCategoryName != ''">
+                goodsCategoryName,
+            </if>
+            <if test="weight != null">
+                weight,
+            </if>
+            <if test="volume != null">
+                volume,
+            </if>
+            <if test="ratio != null">
+                ratio,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{groupID} ,
+            <if test="houseId != null  ">
+                #{houseId} ,
+            </if>
+            <if test="houseName != null and houseName != '' ">
+                #{houseName} ,
+            </if>
+            <if test="parentId != null  ">
+                #{parentId} ,
+            </if>
+            <if test="businessNo != null and businessNo != '' ">
+                #{businessNo} ,
+            </if>
+            <if test="barcode != null and barcode != '' ">
+                #{barcode} ,
+            </if>
+            <if test="goodsName != null and goodsName != '' ">
+                #{goodsName} ,
+            </if>
+            <if test="goodsDesc != null and goodsDesc != '' ">
+                #{goodsDesc} ,
+            </if>
+            <if test="totalNum != null  ">
+                #{totalNum} ,
+            </if>
+            <if test="beforeNum != null">
+                #{beforeNum},
+            </if>
+            <if test="beforeTotalNum != null">
+                #{beforeTotalNum},
+            </if>
+            <if test="afterNum != null">
+                #{afterNum},
+            </if>
+            <if test="afterTotalNum != null">
+                #{afterTotalNum},
+            </if>
+            <if test="standardUnit != null and standardUnit != '' ">
+                #{standardUnit} ,
+            </if>
+            <if test="batch != null and batch != '' ">
+                #{batch} ,
+            </if>
+            <if test="batchSys != null and batchSys != '' ">
+                #{batchSys} ,
+            </if>
+            <if test="productionDate != null and productionDate != 0  ">
+                #{productionDate} ,
+            </if>
+            <if test="shelfLife != null  ">
+                #{shelfLife} ,
+            </if>
+            <if test="isQualified != null">
+                #{isQualified},
+            </if>
+            <if test="location != null and location != '' ">
+                #{location} ,
+            </if>
+            <if test="status != null  ">
+                #{status} ,
+            </if>
+            <if test="statusStr != null and statusStr != ''">
+                #{statusStr},
+            </if>
+            <if test="action != null  ">
+                #{action} ,
+            </if>
+            <if test="actionBy != null and actionBy != '' ">
+                #{actionBy} ,
+            </if>
+            <if test="actionTime != null  ">
+                #{actionTime} ,
+            </if>
+            <if test="createBy != null and createBy != '' ">
+                #{createBy} ,
+            </if>
+            <if test="createTime != null  ">
+                #{createTime} ,
+            </if>
+            <if test="ownerId  != null  ">
+                #{ownerId} ,
+            </if>
+            <if test="ownerName != null  and ownerName != ''  ">
+                #{ownerName} ,
+            </if>
+            <if test="goodsCategory1Id != null">
+                #{goodsCategory1Id},
+            </if>
+            <if test="goodsCategory1Name != null and goodsCategory1Name != ''">
+                #{goodsCategory1Name},
+            </if>
+            <if test="goodsCategory2Id != null">
+                #{goodsCategory2Id},
+            </if>
+            <if test="goodsCategory2Name != null and goodsCategory2Name != ''">
+                #{goodsCategory2Name},
+            </if>
+            <if test="goodsCategoryId != null">
+                #{goodsCategoryId},
+            </if>
+            <if test="goodsCategoryName != null and goodsCategoryName != ''">
+                #{goodsCategoryName},
+            </if>
+            <if test="weight != null">
+                #{weight},
+            </if>
+            <if test="volume != null">
+                #{volume},
+            </if>
+            <if test="ratio != null">
+                #{ratio},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 排序 -->
+    <sql id="sql_order_by">
+        <if test="sortName != null  ">
+            ORDER BY ${sortName} ${sortOrder}
+        </if>
+    </sql>
+    <!-- 分页 -->
+    <sql id="sql_paging">
+        <if test="pageNumber &gt;0 ">
+            limit #{startRecord} , #{pageSize}
+        </if>
+    </sql>
+
+    <!-- 批量增加 -->
+    <insert id="batchInsert" useGeneratedKeys="true" parameterType="java.util.List">
+        <foreach collection="list" item="item" separator=";">
+            insert into tbl_wms_store_transaction_log
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                groupID,
+                <if test="item.houseId != null ">
+                    houseId,
+                </if>
+                <if test="item.houseName != null">
+                    houseName,
+                </if>
+                <if test="item.parentId != null">
+                    parentId,
+                </if>
+                <if test="item.businessNo != null">
+                    businessNo,
+                </if>
+                <if test="item.barcode != null">
+                    barcode,
+                </if>
+                <if test="item.goodsName != null">
+                    goodsName,
+                </if>
+                <if test="item.goodsDesc != null">
+                    goodsDesc,
+                </if>
+                <if test="item.totalNum != null">
+                    totalNum,
+                </if>
+                <if test="item.beforeNum != null">
+                    beforeNum,
+                </if>
+                <if test="item.beforeTotalNum != null">
+                    beforeTotalNum,
+                </if>
+                <if test="item.afterNum != null">
+                    afterNum,
+                </if>
+                <if test="item.afterTotalNum != null">
+                    afterTotalNum,
+                </if>
+                <if test="item.standardUnit != null">
+                    standardUnit,
+                </if>
+                <if test="item.batch != null">
+                    batch,
+                </if>
+                <if test="item.batchSys != null">
+                    batchSys,
+                </if>
+                <if test="item.productionDate != null">
+                    productionDate,
+                </if>
+                <if test="item.shelfLife != null">
+                    shelfLife,
+                </if>
+                <if test="item.isQualified != null">
+                    isQualified,
+                </if>
+                <if test="item.location != null">
+                    location,
+                </if>
+                <if test="item.status != null">
+                    status,
+                </if>
+                <if test="item.statusStr != null">
+                    statusStr,
+                </if>
+                <if test="item.action != null">
+                    action,
+                </if>
+                <if test="item.actionBy != null">
+                    actionBy,
+                </if>
+                <if test="item.actionTime != null">
+                    actionTime,
+                </if>
+                <if test="item.createBy != null">
+                    createBy,
+                </if>
+                <if test="item.createTime != null">
+                    createTime,
+                </if>
+                <if test="item.ownerId  != null ">
+                    ownerId ,
+                </if>
+                <if test="item.ownerName != null">
+                    ownerName ,
+                </if>
+                <if test="item.goodsCategory1Id != null">
+                    goodsCategory1Id,
+                </if>
+                <if test="item.goodsCategory1Name != null">
+                    goodsCategory1Name,
+                </if>
+                <if test="item.goodsCategory2Id != null">
+                    goodsCategory2Id,
+                </if>
+                <if test="item.goodsCategory2Name != null">
+                    goodsCategory2Name,
+                </if>
+                <if test="item.goodsCategoryId != null">
+                    goodsCategoryId,
+                </if>
+                <if test="item.goodsCategoryName != null">
+                    goodsCategoryName,
+                </if>
+                <if test="item.weight != null">
+                    weight,
+                </if>
+                <if test="item.volume != null">
+                    volume,
+                </if>
+                <if test="item.ratio != null">
+                    ratio,
+                </if>
+            </trim>
+            VALUE
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                #{item.groupID},
+                <if test="item.houseId != null">
+                    #{item.houseId},
+                </if>
+                <if test="item.houseName != null">
+                    #{item.houseName},
+                </if>
+                <if test="item.parentId != null">
+                    #{item.parentId},
+                </if>
+                <if test="item.businessNo != null">
+                    #{item.businessNo},
+                </if>
+                <if test="item.barcode != null">
+                    #{item.barcode},
+                </if>
+                <if test="item.goodsName != null">
+                    #{item.goodsName},
+                </if>
+                <if test="item.goodsDesc != null">
+                    #{item.goodsDesc},
+                </if>
+                <if test="item.totalNum != null">
+                    #{item.totalNum},
+                </if>
+                <if test="item.beforeNum != null">
+                    #{item.beforeNum},
+                </if>
+                <if test="item.beforeTotalNum != null">
+                    #{item.beforeTotalNum},
+                </if>
+                <if test="item.afterNum != null">
+                    #{item.afterNum},
+                </if>
+                <if test="item.afterTotalNum != null">
+                    #{item.afterTotalNum},
+                </if>
+                <if test="item.standardUnit != null">
+                    #{item.standardUnit},
+                </if>
+                <if test="item.batch != null">
+                    #{item.batch},
+                </if>
+                <if test="item.batchSys != null">
+                    #{item.batchSys},
+                </if>
+                <if test="item.productionDate != null">
+                    #{item.productionDate},
+                </if>
+                <if test="item.shelfLife != null">
+                    #{item.shelfLife},
+                </if>
+                <if test="item.isQualified != null">
+                    #{item.isQualified},
+                </if>
+                <if test="item.location != null">
+                    #{item.location},
+                </if>
+                <if test="item.status != null">
+                    #{item.status},
+                </if>
+                <if test="item.statusStr != null">
+                    #{item.statusStr},
+                </if>
+                <if test="item.action != null">
+                    #{item.action},
+                </if>
+                <if test="item.actionBy != null">
+                    #{item.actionBy},
+                </if>
+                <if test="item.actionTime != null">
+                    #{item.actionTime},
+                </if>
+                <if test="item.createBy != null">
+                    #{item.createBy},
+                </if>
+                <if test="item.createTime != null">
+                    #{item.createTime},
+                </if>
+                <if test="item.ownerId  != null">
+                    #{item.ownerId} ,
+                </if>
+                <if test="item.ownerName != null">
+                    #{item.ownerName} ,
+                </if>
+                <if test="item.goodsCategory1Id != null">
+                    #{item.goodsCategory1Id},
+                </if>
+                <if test="item.goodsCategory1Name != null">
+                    #{item.goodsCategory1Name},
+                </if>
+                <if test="item.goodsCategory2Id != null">
+                    #{item.goodsCategory2Id},
+                </if>
+                <if test="item.goodsCategory2Name != null">
+                    #{item.goodsCategory2Name},
+                </if>
+                <if test="item.goodsCategoryId != null">
+                    #{item.goodsCategoryId},
+                </if>
+                <if test="item.goodsCategoryName != null">
+                    #{item.goodsCategoryName},
+                </if>
+                <if test="item.weight != null">
+                    #{item.weight},
+                </if>
+                <if test="item.volume != null">
+                    #{item.volume},
+                </if>
+                <if test="item.ratio != null">
+                    #{item.ratio},
+                </if>
+            </trim>
+        </foreach>
+    </insert>
+
+    <select id="selectSubTableDataList" parameterType="com.chaos.eurekaproducer.domain.StoreTransactionLog" resultMap="RM_StoreTransactionLog">
+        SELECT
+        id,groupID,houseId,houseName,barcode,goodsName,goodsDesc,standardUnit,isQualified,goodsCategory1Name,goodsCategory2Name,goodsCategoryName,
+        beforeNum,beforeTotalNum,totalNum,afterNum,afterTotalNum,location,status,statusStr,businessNo,batch,productionDate,batchSys,ownerName,actionBy,actionTime,createTime,createBy
+        FROM ${subTableName} FORCE INDEX(idx_createTime)
+        WHERE action = 1 AND groupID = #{groupID}
+        <if test="houseId != null">
+            AND houseId = #{houseId}
+        </if>
+        <if test="ownerId != null">
+            AND ownerId = #{ownerId}
+        </if>
+        <if test="barcode != null and barcode != ''">
+            AND (barcode =#{barcode} OR goodsName LIKE CONCAT('%',#{barcode},'%'))
+        </if>
+        <if test="businessNo != null and businessNo != ''">
+            AND businessNo =#{businessNo}
+        </if>
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+        <if test="location != null and location != ''">
+            AND location = #{location}
+        </if>
+        <if test="actionBy != null and actionBy != ''">
+            AND actionBy =#{actionBy}
+        </if>
+        <if test="actionTimeStart != null">
+            AND createTime >= #{actionTimeStart}
+        </if>
+        <if test="actionTimeEnd != null">
+            AND createTime <![CDATA[<=]]> #{actionTimeEnd}
+        </if>
+        <if test="goodsCategoryIdStr != null and goodsCategoryIdStr != ''">
+            AND (goodsCategoryId = #{goodsCategoryIdStr} or goodsCategory1Id = #{goodsCategoryIdStr} or goodsCategory2Id = #{goodsCategoryIdStr})
+        </if>
+        <if test="batchSys != null and batchSys != ''">
+            AND batchSys LIKE CONCAT('%',#{batchSys},'%')
+        </if>
+        <if test="statusList != null and statusList.size() > 0">
+            AND status IN
+            <foreach collection="statusList" open="(" separator="," close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="batch != null and batch != ''">
+            AND batch = #{batch}
+        </if>
+        <if test="productionDate != null">
+            AND productionDate = #{productionDate}
+        </if>
+    </select>
+
+    <select id="selectSubTableStatisticalData" parameterType="com.chaos.eurekaproducer.domain.StoreTransactionLog" resultMap="RM_StoreTransactionLog">
+        SELECT
+        groupID,houseId,houseName,ownerId,ownerName,location,barcode,goodsName,goodsDesc,standardUnit,count(*) totalNum
+        FROM ${subTableName} FORCE INDEX(idx_createTime)
+        WHERE action = 1 AND groupID = #{groupID}
+        <if test="houseId != null">
+            AND houseId = #{houseId}
+        </if>
+        <if test="ownerId != null">
+            AND ownerId = #{ownerId}
+        </if>
+        <if test="barcode != null and barcode != ''">
+            AND (barcode =#{barcode} OR goodsName LIKE CONCAT('%',#{barcode},'%'))
+        </if>
+        <if test="businessNo != null and businessNo != ''">
+            AND businessNo =#{businessNo}
+        </if>
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+        <if test="location != null and location != ''">
+            AND location = #{location}
+        </if>
+        <if test="actionBy != null and actionBy != ''">
+            AND actionBy =#{actionBy}
+        </if>
+        <if test="actionTimeStart != null">
+            AND createTime >= #{actionTimeStart}
+        </if>
+        <if test="actionTimeEnd != null">
+            AND createTime <![CDATA[<=]]> #{actionTimeEnd}
+        </if>
+        <if test="goodsCategoryIdStr != null and goodsCategoryIdStr != ''">
+            AND (goodsCategoryId = #{goodsCategoryIdStr} or goodsCategory1Id = #{goodsCategoryIdStr} or goodsCategory2Id = #{goodsCategoryIdStr})
+        </if>
+        <if test="batchSys != null and batchSys != ''">
+            AND batchSys LIKE CONCAT('%',#{batchSys},'%')
+        </if>
+        <if test="statusList != null and statusList.size() > 0">
+            AND status IN
+            <foreach collection="statusList" open="(" separator="," close=")" item="item">
+                #{item}
+            </foreach>
+        </if>
+        <if test="batch != null and batch != ''">
+            AND batch = #{batch}
+        </if>
+        <if test="productionDate != null">
+            AND productionDate = #{productionDate}
+        </if>
+        group by  ownerId,location,barcode
+    </select>
+
+
+    <insert id="separateStorage" parameterType="com.chaos.eurekaproducer.domain.StoreTransactionLog"  useGeneratedKeys="true" keyProperty="id">
+        insert into tbl_wms_store_transaction_log_${actionBy}(id,groupID,houseId,houseName,parentId,businessNo,status,statusStr,barcode,
+        goodsName,goodsDesc,standardUnit,location,beforeNum,beforeTotalNum,totalNum,afterNum,afterTotalNum,batch,batchSys,productionDate,
+        shelfLife,isQualified,action,actionBy,actionTime,createBy,createTime,ownerId,ownerName,goodsCategory1Id,goodsCategory1Name,goodsCategory2Id,
+        goodsCategory2Name,goodsCategoryId,goodsCategoryName)
+        select id,groupID,houseId,houseName,parentId,businessNo,status,statusStr,barcode,
+        goodsName,goodsDesc,standardUnit,location,beforeNum,beforeTotalNum,totalNum,afterNum,afterTotalNum,batch,batchSys,productionDate,
+        shelfLife,isQualified,action,actionBy,actionTime,createBy,createTime,ownerId,ownerName,goodsCategory1Id,goodsCategory1Name,goodsCategory2Id,
+        goodsCategory2Name,goodsCategoryId,goodsCategoryName
+        from tbl_wms_store_transaction_log where
+        <if test="actionTimeStart != null">
+            createTime >= #{actionTimeStart}
+        </if>
+        <if test="actionTimeEnd != null">
+            AND createTime <![CDATA[<]]> #{actionTimeEnd}
+        </if>
+    </insert>
+
+    <select id="listData" resultMap="RM_StoreTransactionLog">
+        SELECT *
+        FROM tbl_wms_store_transaction_log
+        WHERE action = 1
+    </select>
+</mapper>
+
