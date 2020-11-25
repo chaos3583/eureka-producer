@@ -1,6 +1,7 @@
 package com.chaos.eurekaproducer.mapper;
 
 import com.chaos.eurekaproducer.domain.StoreTransactionLog;
+import com.chaos.eurekaproducer.domain.StoreTransactionLogQuery;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -25,6 +26,7 @@ public interface StoreTransactionLogMapper {
     List<StoreTransactionLog> selectSubTableDataList(StoreTransactionLog query);
     List<StoreTransactionLog> selectSubTableStatisticalData(StoreTransactionLog query);
 
-    List<StoreTransactionLog> listData();
+    List<StoreTransactionLog> listData(StoreTransactionLogQuery query);
 
+    Long count();
 }

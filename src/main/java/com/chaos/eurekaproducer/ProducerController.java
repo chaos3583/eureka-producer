@@ -26,9 +26,133 @@ public class ProducerController {
     @ResponseBody
     private String createIndex(@RequestBody Query query) throws IOException {
         ESUtil esUtil = new ESUtil();
-        String jsonStr = "{\n    \"_doc\": {\n\"properties\": {\n\"name\": {\n\"type\": \"keyword\"\n},\n\"age\": {\n\"type\": \"long\"\n}\n}\n}\n}";
-        String result = esUtil.createIndex(query.getIndex(),query.getJsonStr());
+        String jsonStr = "{\n" +
+                "    \"_doc\": {\n" +
+                "        \"properties\": {\n" +
+                "            \"id\": {\n" +
+                "                \"type\": \"long\"\n" +
+                "            },\n" +
+                "             \"groupID\": {\n" +
+                "                \"type\": \"long\"\n" +
+                "            },\n" +
+                "             \"houseId\": {\n" +
+                "                \"type\": \"long\"\n" +
+                "            },\n" +
+                "             \"houseName\": {\n" +
+                "                \"type\": \"keyword\"\n" +
+                "            },\n" +
+                "             \"parentId\": {\n" +
+                "                \"type\": \"long\"\n" +
+                "            },\n" +
+                "            \"businessNo\": {\n" +
+                "                \"type\": \"text\"\n" +
+                "            },\n" +
+                "            \"status\": {\n" +
+                "                \"type\": \"integer\"\n" +
+                "            },\n" +
+                "            \"statusStr\": {\n" +
+                "                \"type\": \"keyword\"\n" +
+                "            },\n" +
+                "            \"barcode\": {\n" +
+                "                \"type\": \"text\"\n" +
+                "            },\n" +
+                "            \"goodsName\": {\n" +
+                "                \"type\": \"text\"\n" +
+                "            },\n" +
+                "            \"goodsDesc\": {\n" +
+                "                \"type\": \"keyword\"\n" +
+                "            },\n" +
+                "            \"standardUnit\": {\n" +
+                "                \"type\": \"keyword\"\n" +
+                "            },\n" +
+                "            \"location\": {\n" +
+                "                \"type\": \"keyword\"\n" +
+                "            },\n" +
+                "            \"totalNum\": {\n" +
+                "                \"type\": \"double\"\n" +
+                "            },\n" +
+                "            \"beforeNum\": {\n" +
+                "                \"type\": \"double\"\n" +
+                "            },\n" +
+                "            \"beforeTotalNum\": {\n" +
+                "                \"type\": \"double\"\n" +
+                "            },\n" +
+                "            \"afterNum\": {\n" +
+                "                \"type\": \"double\"\n" +
+                "            },\n" +
+                "             \"afterTotalNum\": {\n" +
+                "                \"type\": \"double\"\n" +
+                "            },\n" +
+                "             \"batch\": {\n" +
+                "                \"type\": \"keyword\"\n" +
+                "            },\n" +
+                "             \"batchSys\": {\n" +
+                "                \"type\": \"text\"\n" +
+                "            },\n" +
+                "            \"productionDate\": {\n" +
+                "                \"type\": \"long\"\n" +
+                "            },\n" +
+                "             \"shelfLife\": {\n" +
+                "                \"type\": \"long\"\n" +
+                "            },\n" +
+                "            \"isQualified\": {\n" +
+                "                \"type\": \"integer\"\n" +
+                "            },\n" +
+                "            \"action\": {\n" +
+                "                \"type\": \"integer\"\n" +
+                "            },\n" +
+                "            \"actionBy\": {\n" +
+                "                \"type\": \"keyword\"\n" +
+                "            },\n" +
+                "            \"actionTime\": {\n" +
+                "                \"type\": \"long\"\n" +
+                "            },\n" +
+                "            \"createBy\": {\n" +
+                "                \"type\": \"keyword\"\n" +
+                "            },\n" +
+                "            \"createTime\": {\n" +
+                "                \"type\": \"long\"\n" +
+                "            },\n" +
+                "            \"ownerId\": {\n" +
+                "                \"type\": \"long\"\n" +
+                "            },\n" +
+                "            \"ownerName\": {\n" +
+                "                \"type\": \"keyword\"\n" +
+                "            },\n" +
+                "            \"goodsCategory1Id\": {\n" +
+                "                \"type\": \"long\"\n" +
+                "            },\n" +
+                "            \"goodsCategory1Name\": {\n" +
+                "                \"type\": \"keyword\"\n" +
+                "            },\n" +
+                "            \"goodsCategory2Id\": {\n" +
+                "                \"type\": \"long\"\n" +
+                "            },\n" +
+                "            \"goodsCategory2Name\": {\n" +
+                "                \"type\": \"keyword\"\n" +
+                "            },\n" +
+                "            \"goodsCategoryId\": {\n" +
+                "                \"type\": \"long\"\n" +
+                "            },\n" +
+                "            \"goodsCategoryName\": {\n" +
+                "                \"type\": \"keyword\"\n" +
+                "            },\n" +
+                "            \"weight\": {\n" +
+                "                \"type\": \"double\"\n" +
+                "            },\n" +
+                "            \"volume\": {\n" +
+                "                \"type\": \"double\"\n" +
+                "            },\n" +
+                "            \"ratio\": {\n" +
+                "                \"type\": \"double\"\n" +
+                "            }\n" +
+                "            \n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+        String result = esUtil.createIndex(query.getIndex(),jsonStr);
         return result;
+
     }
 
     /**
@@ -62,6 +186,7 @@ public class ProducerController {
         Map<String,Object> map = new HashMap<>();
         map.put("name","夏夜");
         map.put("age",50);
+
         String result = esUtil.addData2(query.getIndex(), query.getJsonStr(), query.getId());
         return result;
     }

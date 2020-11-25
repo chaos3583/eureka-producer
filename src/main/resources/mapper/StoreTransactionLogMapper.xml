@@ -665,8 +665,14 @@
         </if>
     </insert>
 
-    <select id="listData" resultMap="RM_StoreTransactionLog">
+    <select id="listData" parameterType="com.chaos.eurekaproducer.domain.StoreTransactionLogQuery" resultMap="RM_StoreTransactionLog">
         SELECT *
+        FROM tbl_wms_store_transaction_log
+        WHERE action = 1 limit #{pageNo},#{pageSize}
+    </select>
+
+    <select id="count" parameterType="com.chaos.eurekaproducer.domain.StoreTransactionLogQuery" resultType="long">
+        SELECT count(1)
         FROM tbl_wms_store_transaction_log
         WHERE action = 1
     </select>

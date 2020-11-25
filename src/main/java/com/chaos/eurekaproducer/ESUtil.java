@@ -20,28 +20,28 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.action.support.replication.ReplicationResponse;
 import org.elasticsearch.action.update.UpdateResponse;
-import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.common.xcontent.XContentParser;
 import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.common.xcontent.json.JsonXContent;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.rest.RestStatus;
+import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * Created by Herbert on 2019/1/28.
- */
+ * @program: eureka-producer
+ * * @description:
+ * * @author: liaopeng
+ * * @create: 2020-11-20 15:42
+ **/
 public class ESUtil {
 
     protected RestHighLevelClient client;
@@ -193,14 +193,139 @@ public class ESUtil {
      * search
      * @throws IOException
      */
-    public void search() throws IOException {
+    public SearchHits searchByCondition(Query query) throws IOException {
         SearchRequest rq = new SearchRequest();
-        rq.indices("movies");
-        SearchSourceBuilder sb = new SearchSourceBuilder();
-        rq.source(sb);
-        sb.from(0);
-        sb.size(10);
+        rq.indices("storetransactionlog");
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+
+        //boolQuery有四个方法：
+        // must 相当于 与 & = 会进行评分；must not 相当于 非 ~   ！=；
+        // should 相当于 或  |   or ；
+        // filter  过滤，同must不过不会评分，效率好一点
+        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+
+        termQuery(query,boolQuery);//精确匹配
+        wildcardQuery(query,boolQuery);//模糊匹配
+        multiMatchQuery(query,boolQuery);//多字段精确匹配
+        moreLikeThisQuery(query,searchSourceBuilder);//多字段模糊匹配
+        rangeQuery(query,boolQuery);//范围查询
+        sort(query,searchSourceBuilder);//排序
+        page(query,searchSourceBuilder);//分页
+
+        searchSourceBuilder.query(boolQuery);
+        rq.source(searchSourceBuilder);
         SearchResponse search = client.search(rq);
+
+        if (search.status() != RestStatus.OK || search.getHits().getTotalHits() <= 0) {
+             return null;
+        }
+        SearchHits hits = search.getHits();
+        return hits;
+
+    }
+
+    /**
+     * 分页
+     * @param query
+     * @param searchSourceBuilder
+     */
+    private void page(Query query, SearchSourceBuilder searchSourceBuilder) {
+        if (query.getPageNo()>0){
+            searchSourceBuilder.from((query.getPageNo()-1)*query.getSize());
+            searchSourceBuilder.size(query.getSize());
+        }
+    }
+
+    /**
+     * 排序
+     * @param query
+     * @param searchSourceBuilder
+     */
+    private void sort(Query query, SearchSourceBuilder searchSourceBuilder) {
+        if (query.getSortCondition()!=null && query.getSortCondition().size()>0){
+            query.getSortCondition().forEach(sort->{
+                searchSourceBuilder.sort(sort);
+            });
+        }
+    }
+
+    /**
+     * 时间范围查询条件
+     * @param query
+     * @param boolQuery
+     */
+    private void rangeQuery(Query query, BoolQueryBuilder boolQuery) {
+        if (query.getRangeCondition()!=null && query.getRangeCondition().size()>0){
+            query.getRangeCondition().forEach((k,v)->{
+                Map<String,String> timeMap = (Map<String,String>) v;
+                RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery(k);
+                rangeQueryBuilder.gte(timeMap.get("startTime"));
+                rangeQueryBuilder.lte(timeMap.get("endTime"));
+                boolQuery.filter(rangeQueryBuilder);
+            });
+        }
+    }
+
+    /**
+     * 多字段模糊匹配
+     * @param query
+     * @param searchSourceBuilder
+     */
+    private void moreLikeThisQuery(Query query, SearchSourceBuilder searchSourceBuilder) {
+        if (query.getDimMultiCondition()!=null && query.getDimMultiCondition().size()>0){
+            query.getMultiCondition().forEach((k,v)->{
+                String[] fields = v.toString().split(",");
+                MoreLikeThisQueryBuilder moreLikeThisQueryBuilder = QueryBuilders.moreLikeThisQuery(fields,new String[]{k},null);
+                moreLikeThisQueryBuilder.analyzer("ik_max_word");
+                System.out.println(moreLikeThisQueryBuilder.analyzer());
+                moreLikeThisQueryBuilder.minTermFreq(1);
+                searchSourceBuilder.query(moreLikeThisQueryBuilder);
+            });
+        }
+    }
+
+    /**
+     * 输入一个条件匹配多个字段
+     * @param query
+     * @param boolQuery
+     */
+    private void multiMatchQuery(Query query, BoolQueryBuilder boolQuery) {
+        if (query.getMultiCondition()!=null && query.getMultiCondition().size()>0){
+            query.getMultiCondition().forEach((k,v)->{
+                String[] fields = v.toString().split(",");
+                MultiMatchQueryBuilder multiMatchQueryBuilder = QueryBuilders.multiMatchQuery(k, fields);
+                boolQuery.filter(multiMatchQueryBuilder);
+            });
+        }
+    }
+
+    /**
+     * 模糊匹配条件
+     */
+    private void wildcardQuery(Query query, BoolQueryBuilder boolQuery) {
+        if (query.getDimCondition()!=null && query.getDimCondition().size()>0){
+            query.getDimCondition().forEach((k,v)->{
+                WildcardQueryBuilder wildcardQueryBuilder = QueryBuilders.wildcardQuery(k, "*"+v.toString()+"*");
+                boolQuery.filter(wildcardQueryBuilder);
+            });
+        }
+    }
+
+    /**
+     * 精确匹配条件
+     * @param query
+     * @param boolQuery
+     */
+    private void termQuery(Query query, BoolQueryBuilder boolQuery) {
+        if (query.getExactCondition()!=null && query.getExactCondition().size()>0){
+            query.getExactCondition().forEach((k,v)->{
+                //matchQuery会分词
+//            MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery(k, v.toString());
+                //termquery不会分词
+                TermQueryBuilder termQueryBuilder = QueryBuilders.termQuery(k, v.toString());
+                boolQuery.filter(termQueryBuilder);
+            });
+        }
     }
 
     /**
@@ -325,48 +450,6 @@ public class ESUtil {
             return "新增数据失败";
         }
     }
-
-    public static void main(String ags[]) {
-        Map<String, Object> map1 = new HashMap<String, Object>();
-        map1.put("id", "2");
-        map1.put("user1", "bbherbert1");
-        map1.put("postDate", "2018-08-30");
-        map1.put("username", "aa");
-        map1.put("message", "message");
-        Map<String, Object> map2 = new HashMap<String, Object>();
-        map2.put("id", "3");
-        map2.put("user2", "bbherbert1");
-        map2.put("postDate", "2018-08-30");
-        map2.put("username", "aa");
-        map2.put("message", "message");
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("id", "1");
-        map.put("user", "bbherbert1");
-        map.put("postDate", "2018-08-30");
-        map.put("username", "aa");
-        map.put("message", "message");
-
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        list.add(map);
-        list.add(map1);
-        list.add(map2);
-        ESUtil esUtil = new ESUtil();
-        esUtil.bulkDate("book15", "boo", "id", list);
-//        Map<String,Object> map = new HashMap<String, Object>();
-//        map.put("user","herbert1");
-//        map.put("postDate","2018-08-30");
-//        map.put("username","aa");
-//        map.put("message","message");
-//        String jsonString = JSON.toJSONString(map);
-//        esUtil.addData("hh","d","4",jsonString);
-//        esUtil.addData("hh","d","4","{" +
-//                "\"user\":\"kimchy\"," +
-//                "\"postDate\":\"2013-01-30\"," +
-//                "\"username\":\"zhangsan\"," +
-//                "\"message\":\"trying out Elasticsearch\"" +
-//                "}");
-    }
-
 }
 
 
