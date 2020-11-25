@@ -26,10 +26,10 @@ public class Query {
     private String type="_doc";
 
     //精确匹配条件
-    private Map<String,Object> exactCondition ;
+    private Map<String,Object> matchCondition ;
 
     //模糊匹配条件
-    private Map<String,Object> dimCondition ;
+    private Map<String,Object> wildcardCondition ;
 
     //范围条件
     private Map<String,Object> rangeCondition ;
@@ -38,7 +38,7 @@ public class Query {
     private Map<String,Object> multiCondition ;
 
     //多条件匹配，输入一个条件匹配多个字段，模糊匹配
-    private Map<String,Object> dimMultiCondition ;
+    private Map<String,Object> moreLikeCondition ;
 
 
 

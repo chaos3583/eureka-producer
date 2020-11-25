@@ -190,25 +190,26 @@ public class ESUtil {
     }
 
     /**
-     * search
+     * 根据条件查询
      * @throws IOException
      */
     public SearchHits searchByCondition(Query query) throws IOException {
         SearchRequest rq = new SearchRequest();
-        rq.indices("storetransactionlog");
+        rq.indices(query.getIndex());
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 
         //boolQuery有四个方法：
-        // must 相当于 与 & = 会进行评分；must not 相当于 非 ~   ！=；
+        // must 相当于 与 & = 会进行评分；
+        // must not 相当于 非 ~   ！=；
         // should 相当于 或  |   or ；
         // filter  过滤，同must不过不会评分，效率好一点
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
 
-        termQuery(query,boolQuery);//精确匹配
+        matchQuery(query,boolQuery);//精确匹配
         wildcardQuery(query,boolQuery);//模糊匹配
         multiMatchQuery(query,boolQuery);//多字段精确匹配
-        moreLikeThisQuery(query,searchSourceBuilder);//多字段模糊匹配
-        rangeQuery(query,boolQuery);//范围查询
+        moreLikeThisQuery(query,boolQuery);//多字段模糊匹配
+        rangeQuery(query,boolQuery);//时间范围查询
         sort(query,searchSourceBuilder);//排序
         page(query,searchSourceBuilder);//分页
 
@@ -269,17 +270,17 @@ public class ESUtil {
     /**
      * 多字段模糊匹配
      * @param query
-     * @param searchSourceBuilder
+     * @param boolQuery
      */
-    private void moreLikeThisQuery(Query query, SearchSourceBuilder searchSourceBuilder) {
-        if (query.getDimMultiCondition()!=null && query.getDimMultiCondition().size()>0){
-            query.getMultiCondition().forEach((k,v)->{
+    private void moreLikeThisQuery(Query query, BoolQueryBuilder boolQuery) {
+        if (query.getMoreLikeCondition()!=null && query.getMoreLikeCondition().size()>0){
+            query.getMoreLikeCondition().forEach((k,v)->{
                 String[] fields = v.toString().split(",");
                 MoreLikeThisQueryBuilder moreLikeThisQueryBuilder = QueryBuilders.moreLikeThisQuery(fields,new String[]{k},null);
-                moreLikeThisQueryBuilder.analyzer("ik_max_word");
-                System.out.println(moreLikeThisQueryBuilder.analyzer());
-                moreLikeThisQueryBuilder.minTermFreq(1);
-                searchSourceBuilder.query(moreLikeThisQueryBuilder);
+                moreLikeThisQueryBuilder.analyzer("ik_max_word");//使用ik分词器
+                moreLikeThisQueryBuilder.minTermFreq(1);//最少查找1条
+                moreLikeThisQueryBuilder.minimumShouldMatch("100%");//匹配度
+                boolQuery.must(moreLikeThisQueryBuilder);
             });
         }
     }
@@ -303,8 +304,8 @@ public class ESUtil {
      * 模糊匹配条件
      */
     private void wildcardQuery(Query query, BoolQueryBuilder boolQuery) {
-        if (query.getDimCondition()!=null && query.getDimCondition().size()>0){
-            query.getDimCondition().forEach((k,v)->{
+        if (query.getWildcardCondition()!=null && query.getWildcardCondition().size()>0){
+            query.getWildcardCondition().forEach((k,v)->{
                 WildcardQueryBuilder wildcardQueryBuilder = QueryBuilders.wildcardQuery(k, "*"+v.toString()+"*");
                 boolQuery.filter(wildcardQueryBuilder);
             });
@@ -316,14 +317,14 @@ public class ESUtil {
      * @param query
      * @param boolQuery
      */
-    private void termQuery(Query query, BoolQueryBuilder boolQuery) {
-        if (query.getExactCondition()!=null && query.getExactCondition().size()>0){
-            query.getExactCondition().forEach((k,v)->{
+    private void matchQuery(Query query, BoolQueryBuilder boolQuery) {
+        if (query.getMatchCondition()!=null && query.getMatchCondition().size()>0){
+            query.getMatchCondition().forEach((k,v)->{
                 //matchQuery会分词
 //            MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery(k, v.toString());
                 //termquery不会分词
-                TermQueryBuilder termQueryBuilder = QueryBuilders.termQuery(k, v.toString());
-                boolQuery.filter(termQueryBuilder);
+                MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery(k, v.toString());
+                boolQuery.filter(matchQueryBuilder);
             });
         }
     }
