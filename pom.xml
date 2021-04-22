@@ -46,6 +46,7 @@
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-server</artifactId>
         </dependency>
+
         <!--elasticsearch依赖包开始-->
         <dependency>
             <groupId>org.elasticsearch.client</groupId>
@@ -73,6 +74,7 @@
             <version>6.8.5</version>
         </dependency>
         <!--elasticsearch依赖包结束-->
+
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
@@ -96,12 +98,12 @@
             <version>3.4</version>
         </dependency>
 
+        <!--mybatis依赖-->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>2.1.2</version>
         </dependency>
-
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -117,11 +119,14 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
         </dependency>
+
+        <!--redisson-->
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
             <version>3.11.1</version>
         </dependency>
+
     </dependencies>
 
     <dependencyManagement>

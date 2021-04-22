@@ -1,6 +1,8 @@
-package com.chaos.eurekaproducer;
+package com.chaos.eurekaproducer.es;
 
 import com.alibaba.fastjson.JSONObject;
+import com.chaos.eurekaproducer.es.ESUtil;
+import com.chaos.eurekaproducer.es.Query;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;

@@ -1,12 +1,9 @@
-package com.chaos.eurekaproducer;
+package com.chaos.eurekaproducer.es;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.chaos.eurekaproducer.domain.StoreTransactionLog;
 import com.chaos.eurekaproducer.domain.StoreTransactionLogQuery;
 import com.chaos.eurekaproducer.service.IStoreTransactionLogService;
 import org.elasticsearch.search.SearchHits;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.web.bind.annotation.RequestBody;

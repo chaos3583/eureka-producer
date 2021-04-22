@@ -12,4 +12,6 @@ public interface IStoreTransactionLogService {
     int batchInsert(List<StoreTransactionLog> list);
 
     Long count();
+
+    String testString(String str);
 }

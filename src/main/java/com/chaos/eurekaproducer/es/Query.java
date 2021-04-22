@@ -1,4 +1,4 @@
-package com.chaos.eurekaproducer;
+package com.chaos.eurekaproducer.es;
 
 import lombok.Data;
 

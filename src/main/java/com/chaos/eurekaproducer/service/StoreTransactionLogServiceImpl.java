@@ -1,20 +1,17 @@
 package com.chaos.eurekaproducer.service;
 
 
-import com.chaos.eurekaproducer.ESUtil;
+import com.chaos.eurekaproducer.annotation.Transaction;
 import com.chaos.eurekaproducer.domain.StoreTransactionLog;
 import com.chaos.eurekaproducer.domain.StoreTransactionLogQuery;
 import com.chaos.eurekaproducer.mapper.StoreTransactionLogMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.beans.BeanMap;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-@Component
+@Service
 public class StoreTransactionLogServiceImpl  implements IStoreTransactionLogService{
 
     @Autowired
@@ -34,6 +31,16 @@ public class StoreTransactionLogServiceImpl  implements IStoreTransactionLogServ
 
     @Override
     public Long count() {
-        return storeTransactionLogMapper.count();
+        Long count = storeTransactionLogMapper.count();
+        System.out.println(count);
+        return count;
     }
+
+    @Override
+    public String testString(String str) {
+        System.out.println(str);
+        return str;
+    }
+
+
 }
