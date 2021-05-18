@@ -1,9 +1,11 @@
 package com.chaos.eurekaproducer.redis;
 
 
+import com.chaos.eurekaproducer.config.Updater;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.ibatis.annotations.Update;
 import org.glassfish.jersey.internal.guava.ThreadFactoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +43,7 @@ import java.util.concurrent.ThreadFactory;
  */
 @Configuration
 @EnableCaching // 开启缓存支持（无此注解，可能无法读取redis配置文件）
-public class RedisConfig/* extends CachingConfigurerSupport*/ {
+public class RedisConfig/* extends CachingConfigurerSupport*/ implements Updater {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Resource
@@ -158,5 +160,10 @@ public class RedisConfig/* extends CachingConfigurerSupport*/ {
         container.setTaskExecutor(taskExecutor);
 
         return container;
+    }
+
+    @Override
+    public void update() {
+
     }
 }

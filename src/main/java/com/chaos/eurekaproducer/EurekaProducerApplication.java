@@ -10,6 +10,8 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableDiscoveryClient
 public class EurekaProducerApplication {
 
+    
+
     public static void main(String[] args) {
         SpringApplication.run(EurekaProducerApplication.class, args);
     }

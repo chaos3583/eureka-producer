@@ -7,12 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-/**
- * Title: <br>
- * Description: <br>
- * Copyright: Copyright (c) 2017<br>
- * Company: 北京多来点信息技术有限公司<br>
- */
+
 @Mapper
 @Repository
 public interface StoreTransactionLogMapper {

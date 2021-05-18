@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+<mapper namespace="com.chaos.eurekaproducer.mapper.UserMapper">
+    <!-- table映射实体对象 -->
+    <resultMap id="RM_User" type="com.chaos.eurekaproducer.domain.User">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="age" column="age"/>
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="select_columns">
+        <![CDATA[id,name,age]]>
+    </sql>
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="com.chaos.eurekaproducer.domain.User" useGeneratedKeys="true" keyProperty="id">
+        insert into chaos_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            name,age
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{name},#{age}
+        </trim>
+    </insert>
+
+    <!-- 批量增加 -->
+    <insert id="batchInsert" useGeneratedKeys="true" parameterType="java.util.List">
+        <foreach collection="list" item="item" separator=";">
+            insert into chaos_user
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                name,age
+            </trim>
+            VALUE
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                #{item.name}, #{item.age},
+            </trim>
+        </foreach>
+    </insert>
+</mapper>
+

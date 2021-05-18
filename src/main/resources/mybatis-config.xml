@@ -23,5 +23,6 @@
 
     <mappers>
     	<mapper resource="mapper/StoreTransactionLogMapper.xml" />
+    	<mapper resource="mapper/UserMapper.xml" />
 	</mappers>
 </configuration>
